@@ -3,8 +3,8 @@ The Top FIBers dashboard tracks and reports on the top ten superspreaders of low
 
 This site makes up the official documentation of everything that is needed to know about the project.
 
-- Source code: https://github.com/mr-devs/top-fibers
-- Documentation code: https://github.com/mr-devs/top-fibers/tree/main/docs
+- Source code: https://github.com/osome-iu/top-FIBers
+- Documentation code: https://github.com/osome-iu/top-FIBers/tree/main/docs
 - Website: https://osome.iu.edu/tools/topfibers/
 
 💥‼️ **If you are new here, start with this page: [Updating this documentation](./documentation.md)** ‼️💥
