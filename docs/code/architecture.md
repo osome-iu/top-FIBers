@@ -10,7 +10,7 @@ All data and analysis are kept on the `lenny` machine in this repository:
 /home/data/apps/topfibers/
 ```
 
-Note that this projects [repository](https://github.com/mr-devs/top-fibers) is cloned via `git` while _inside of the `topfibers/` directory_ and the name of the repository is specified as `repo`. 
+Note that this projects [repository](https://github.com/osome-iu/top-FIBers) is cloned via `git` while _inside of the `topfibers/` directory_ and the name of the repository is specified as `repo`. 
 
 E.g. via:
 ```
