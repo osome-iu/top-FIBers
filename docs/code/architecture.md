@@ -14,7 +14,7 @@ Note that this projects [repository](https://github.com/osome-iu/top-FIBers) is 
 
 E.g. via:
 ```
-git clone git@github.com:mr-devs/top-FIBers.git repo
+git clone git@github.com:osome-iu/top-FIBers repo
 ```
 
 ### Database and website
