@@ -63,4 +63,4 @@ After all of the above has been completed, code kept in the `data-loader/` direc
 Specifically, the `run_data_loader.sh` script is executed by the monthly bash script which runs the `data-loader/server.py` script.
 
 ### 6. The front end
-Once the database is updated the website (https://osome.iu.edu/tools/topfibers) automatically updates with the latest data. Find the front-end code [here](https://github.iu.edu/truthy-team/TopFIBers-dashboard) 
+Once the database is updated the website (https://osome.iu.edu/tools/topfibers) automatically updates with the latest data. Find the front-end code [here](https://github.iu.edu/truthy-team/TopFIBers-dashboard).
