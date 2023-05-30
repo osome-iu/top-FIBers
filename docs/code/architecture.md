@@ -18,4 +18,4 @@ git clone git@github.com:osome-iu/top-FIBers repo
 ```
 
 ### Database and website
-The database and the website code are kept on `lisa`.
+The database and the website code are kept on `lisa`. Once the database is updated the website (https://osome.iu.edu/tools/topfibers) automatically updates with the latest data. Find the front-end code [here](https://github.iu.edu/truthy-team/TopFIBers-dashboard)
