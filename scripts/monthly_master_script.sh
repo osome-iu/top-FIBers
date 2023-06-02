@@ -233,7 +233,6 @@ rm success.log
 # Log file saved here: ./logs/prep_zenodo_files.log
 # -------------------------------------
 
-# TWITTER
 echo "$(date -Is) : Creating new FIB files for Zenodo..." >> $MASTER_LOG
 $PYTHON_ENV scripts/data_prep/prep_top_fibers_for_zenodo.py
 if [ -e success.log ]; then
