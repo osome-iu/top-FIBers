@@ -21,6 +21,7 @@ from top_fibers_pkg.utils import get_logger
 REPO_ROOT = "/home/data/apps/topfibers/repo"
 LOG_DIR = "./logs"
 LOG_FNAME = "prep_zenodo_files.log"
+SUCCESS_FNAME = "success.log"
 
 # FIB DIR and GLOB_STRING are combined to find all FIB files under FIB_DIR via glob.glob()
 FIB_DIR = "./data/derived/fib_results"
@@ -47,8 +48,7 @@ def create_new_output_fname(file_path):
     split_file = file_path.split("/")
     platform, year_month = split_file[-3], split_file[-2]
     new_output_fname = os.path.join(
-        OUTPUT_DIR,
-        f"{year_month}__fib_indices_{platform}.csv"
+        OUTPUT_DIR, f"{year_month}__fib_indices_{platform}.csv"
     )
     return new_output_fname
 
@@ -81,4 +81,6 @@ if __name__ == "__main__":
         logger.info(f"Creating: {new_output_fname}")
         df.head(50).to_csv(new_output_fname, index=False)
 
-    logger.info("Script complete.")
+    with open(os.path.join(REPO_ROOT, SUCCESS_FNAME), "w+") as outfile:
+        pass
+    logger.info("~~~ Script complete! ~~~")
