@@ -229,4 +229,20 @@ fi
 # Remove after checking for successful completion
 rm success.log
 
+### Create the new files for Zenodo backup
+# Log file saved here: ./logs/prep_zenodo_files.log
+# -------------------------------------
+
+# TWITTER
+echo "$(date -Is) : Creating new FIB files for Zenodo..." >> $MASTER_LOG
+$PYTHON_ENV scripts/data_prep/prep_top_fibers_for_zenodo.py
+if [ -e success.log ]; then
+   echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
+else
+   echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
+   exit 1
+fi
+# Remove after checking for successful completion
+rm success.log
+
 echo "$(date -Is) : Script complete." >> $MASTER_LOG
