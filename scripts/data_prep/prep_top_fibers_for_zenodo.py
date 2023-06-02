@@ -48,7 +48,7 @@ def create_new_output_fname(file_path):
     platform, year_month = split_file[-3], split_file[-2]
     new_output_fname = os.path.join(
         OUTPUT_DIR,
-        f"{year_month}__fib_indices_{platform}.csv",
+        f"{year_month}__fib_indices_{platform}.csv"
     )
     return new_output_fname
 
@@ -75,7 +75,8 @@ if __name__ == "__main__":
         df = pd.read_parquet(file)
         new_output_fname = create_new_output_fname(file)
         if os.path.exists(new_output_fname):
-            logger.info("Skipping, file already exists:\n\t-", new_output_fname)
+            logger.info("Skipping, file already exists:")
+            logger.info(f"\t- {new_output_fname}")
             continue
         logger.info(f"Creating: {new_output_fname}")
         df.head(50).to_csv(new_output_fname, index=False)
