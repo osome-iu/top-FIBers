@@ -1,6 +1,6 @@
 ---
 title: "Data"
-last_modified: "2023-05-07"
+last_modified: "2023-05-23"
 ---
 > Last modified: {{ page.last_modified | date: "%Y-%m-%d"}}
 
@@ -33,7 +33,7 @@ This project utilizes two data sources:
 
 - We utilize the [`posts/search` endpoint](https://github.com/CrowdTangle/API/wiki/Search) with elevated access (up to 10k posts per request). 
     - This page also contains information on the format of posts returned by CT
-    - The script that downloads data is: [`scripts/data_collection/crowdtangle_dl_fb_links.py`](https://github.com/mr-devs/top-FIBers/blob/2d076ea29ba5df11b848c0c033a3662fdfd0cfe6/scripts/data_collection/crowdtangle_dl_fb_links.py)
+    - The script that downloads data is: [`scripts/data_collection/crowdtangle_dl_fb_links.py`](https://github.com/osome-iu/top-FIBers/blob/main/scripts/data_collection/crowdtangle_dl_fb_links.py)
 - The API key can be found on the `lenny` machine saved here:
     ```
     /u/truthy/.top_fib_CT_setup
