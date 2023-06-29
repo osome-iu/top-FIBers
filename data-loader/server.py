@@ -25,7 +25,8 @@ from top_fibers_pkg.utils import get_logger
 facebook_data_path = "/home/data/apps/topfibers/repo/data/derived/fib_results/facebook"
 twitter_data_path = "/home/data/apps/topfibers/repo/data/derived/fib_results/twitter"
 twitter_profile_pic_file_path = "/home/data/apps/topfibers/repo/data/derived/twitter_profile_links/top_fiber_profile_image_links.parquet"
-PLATFORMS = ["Facebook", "Twitter"]
+# PLATFORMS = ["Facebook", "Twitter"]
+PLATFORMS = ["Facebook"]
 LOG_DIR = "/home/data/apps/topfibers/repo/logs"
 LOG_FNAME = "database_server.log"
 
