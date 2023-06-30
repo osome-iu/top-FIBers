@@ -87,47 +87,47 @@ rm success.log
 #    2. Creates a tavern job to pull the Twitter data for the past month
 #    3. Copies those results to Lisa:/home/data/apps/topfibers/moe_twitter_data
 # -------------------------------------
-monthly_moe_outfile=${LOG_DIR}/${CURR_DATE}_monthly_moe.log
-echo "$(date -Is) : Running moe job to get Twitter data..." >> $MASTER_LOG
-echo "$(date -Is) : See progress here: ${monthly_moe_outfile}" >> $MASTER_LOG
-bash scripts/data_collection/get_tweets_from_moe.sh > $monthly_moe_outfile 2>&1
-if [ -e success.log ]; then
-   echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
-else
-   echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
-   exit 1
-fi
-# Remove after checking for successful completion
-rm success.log
+# monthly_moe_outfile=${LOG_DIR}/${CURR_DATE}_monthly_moe.log
+# echo "$(date -Is) : Running moe job to get Twitter data..." >> $MASTER_LOG
+# echo "$(date -Is) : See progress here: ${monthly_moe_outfile}" >> $MASTER_LOG
+# bash scripts/data_collection/get_tweets_from_moe.sh > $monthly_moe_outfile 2>&1
+# if [ -e success.log ]; then
+#    echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
+# else
+#    echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
+#    exit 1
+# fi
+# # Remove after checking for successful completion
+# rm success.log
 
 ### Move raw data to the proper place and format it correctly
 # Log file saved here: ./logs/move_twitter_raw.log
 # -------------------------------------
-echo "$(date -Is) : Moving Twitter data to the proper place..." >> $MASTER_LOG
-$PYTHON_ENV scripts/data_prep/move_twitter_raw.py
-if [ -e success.log ]; then
-   echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
-else
-   echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
-   exit 1
-fi
+# echo "$(date -Is) : Moving Twitter data to the proper place..." >> $MASTER_LOG
+# $PYTHON_ENV scripts/data_prep/move_twitter_raw.py
+# if [ -e success.log ]; then
+#    echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
+# else
+#    echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
+#    exit 1
+# fi
 # Remove after checking for successful completion
-rm success.log
+# rm success.log
 
 ### Create the symbolic links
 # -------------------------------------
 # TWITTER
 # Log file saved here: UPDATE ME
-echo "$(date -Is) : Creating symbolic links for Twitter..." >> $MASTER_LOG
-$PYTHON_ENV scripts/data_prep/create_data_file_symlinks.py -d $TWITTER_DATA_DIR -o $TWITTER_SYM_DIR -m $CURR_YYYY_MM -n 3
-if [ -e success.log ]; then
-   echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
-else
-   echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
-   exit 1
-fi
+# echo "$(date -Is) : Creating symbolic links for Twitter..." >> $MASTER_LOG
+# $PYTHON_ENV scripts/data_prep/create_data_file_symlinks.py -d $TWITTER_DATA_DIR -o $TWITTER_SYM_DIR -m $CURR_YYYY_MM -n 3
+# if [ -e success.log ]; then
+#    echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
+# else
+#    echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
+#    exit 1
+# fi
 # Remove after checking for successful completion
-rm success.log
+# rm success.log
 
 # FACEBOOK
 # Log file saved here: UPDATE ME
@@ -146,16 +146,16 @@ rm success.log
 # -------------------------------------
 # TWITTER
 # Log file saved here: UPDATE ME
-echo "$(date -Is) : Calculating FIB indices for Twitter..." >> $MASTER_LOG
-$PYTHON_ENV scripts/data_processing/calc_twitter_fib_indices.py -d $TWITTER_SYM_DIR/${CURR_YYYY_MM} -o $FIB_OUT_DIR_TWITTER -m $CURR_YYYY_MM -n 3
-if [ -e success.log ]; then
-   echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
-else
-   echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
-   exit 1
-fi
+# echo "$(date -Is) : Calculating FIB indices for Twitter..." >> $MASTER_LOG
+# $PYTHON_ENV scripts/data_processing/calc_twitter_fib_indices.py -d $TWITTER_SYM_DIR/${CURR_YYYY_MM} -o $FIB_OUT_DIR_TWITTER -m $CURR_YYYY_MM -n 3
+# if [ -e success.log ]; then
+#    echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
+# else
+#    echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
+#    exit 1
+# fi
 # Remove after checking for successful completion
-rm success.log
+# rm success.log
 
 # FACEBOOK
 # Log file saved here: UPDATE ME
@@ -206,16 +206,16 @@ rm success.log
 # -------------------------------------
 
 # TWITTER
-echo "$(date -Is) : Calculating post counts for Twitter..." >> $MASTER_LOG
-$PYTHON_ENV scripts/data_processing/count_num_posts.py -o $POST_COUNTS_DIR -d $RAW_DATA_DIR -p twitter
-if [ -e success.log ]; then
-   echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
-else
-   echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
-   exit 1
-fi
+# echo "$(date -Is) : Calculating post counts for Twitter..." >> $MASTER_LOG
+# $PYTHON_ENV scripts/data_processing/count_num_posts.py -o $POST_COUNTS_DIR -d $RAW_DATA_DIR -p twitter
+# if [ -e success.log ]; then
+#    echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
+# else
+#    echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
+#    exit 1
+# fi
 # Remove after checking for successful completion
-rm success.log
+# rm success.log
 
 # FACEBOOK
 echo "$(date -Is) : Calculating post counts for Facebook..." >> $MASTER_LOG
