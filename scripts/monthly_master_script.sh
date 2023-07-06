@@ -261,3 +261,7 @@ rm success.log
 
 
 echo "$(date -Is) : Script complete." >> $MASTER_LOG
+
+git add data/iffy_files
+git commit -m "adding new iffy files"
+git push
