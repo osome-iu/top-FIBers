@@ -139,3 +139,6 @@ env_code/
 # old data
 data/raw_old_w_mixed_domains/
 data/derived_old_w_mixed_domains/
+
+#zenodo config
+scripts/configs.json
