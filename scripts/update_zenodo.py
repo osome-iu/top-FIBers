@@ -48,12 +48,23 @@ with open("scripts/configs.json", 'r') as file:
         folder_path  = configs["folder_path"]
 ##################################
 
+# get checksum
 def calculate_md5(file_path):
     with open(file_path, 'rb') as file:
         md5_hash = hashlib.md5()
         while chunk := file.read(4096):
             md5_hash.update(chunk)
     return md5_hash.hexdigest()
+
+
+# remove draft
+def rm_draft(ACCESS_TOKEN, new_deposition_id):
+    r = requests.delete(f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}',
+        params={'access_token': ACCESS_TOKEN})
+    if r.status_code == 204:
+        logger.info(f"Draft discarded")
+    else:
+        logger.info(f"Failed to discard draft, error code: {r.status_code}")
 
 
 if __name__ == "__main__":
@@ -73,7 +84,7 @@ if __name__ == "__main__":
     r = requests.get('https://zenodo.org/api/deposit/depositions',
                     params={'access_token': ACCESS_TOKEN})
     if r.status_code == 200:
-        logger.info(f"Successfully retrieved all depositions")
+        logger.info(f"Retrieved all deposition info")
     else:
         logger.info(f"Failed to retrieve the list of depositions, error code: {r.status_code}")
         try:
@@ -98,11 +109,11 @@ if __name__ == "__main__":
     json_response = response.json()
 
     if response.status_code != 201:
-        logger.info(f"Failed to create a new version. Status code: {response.status_code}")
+        logger.info(f"Failed to create draft. Status code: {response.status_code}")
         logger.info(json_response)
     else:
         new_deposition_id = json_response['links']['latest_draft'].split("/")[-1]
-        logger.info("New version created successfully.")
+        logger.info("Draft created.")
         logger.info(f"New deposition ID: {new_deposition_id}")
 
         # Retrieve list of local files
@@ -121,41 +132,23 @@ if __name__ == "__main__":
                     response = requests.delete(f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}/files/{file_id}',
                                                 params={'access_token': ACCESS_TOKEN})
                     if response.status_code == 204:
-                        logger.info(f"Old File deleted successfully. {filename}")
+                        logger.info(f"Old File deleted. {filename}")
                     else:
                         logger.info(f"Failed to Remove old {filename}. Status code: {response.status_code}")
                         logger.info(json_response)
-                        ####################
-                        #     rm Draft     #
-                        ####################
-                        r = requests.delete(f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}',
-                                params={'access_token': ACCESS_TOKEN})
-                        if r.status_code == 204:
-                            logger.info(f"Draft discarded")
-                        else:
-                            logger.info(f"Failed to discard draft, see below for details : error code {r.status_code}")
-                        #####################
+                        rm_draft(ACCESS_TOKEN, new_deposition_id)
 
                     url = f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}/files?access_token={ACCESS_TOKEN}'
                     data = {'name': filename}
                     files = {'file': open(file_path, 'rb')}
                     response = requests.post(url, data=data, files=files)
                     if response.status_code == 201:
-                        logger.info(f"File added to the new version successfully. {filename}")
+                        logger.info(f"File added to the new draft. {filename}")
                         to_be_updated += [filename]
                     else:
-                        logger.info(f"Failed to add {filename} to the new version. Status code: {response.status_code}")
+                        logger.info(f"Failed to add {filename} to the new draft. Status code: {response.status_code}")
                         logger.info(response.json())
-                        ####################
-                        #     rm Draft     #
-                        ####################
-                        r = requests.delete(f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}',
-                                params={'access_token': ACCESS_TOKEN})
-                        if r.status_code == 204:
-                            logger.info(f"Draft discarded")
-                        else:
-                            logger.info(f"Failed to discard draft, see below for details : error code {r.status_code}")
-                        #####################
+                        rm_draft(ACCESS_TOKEN, new_deposition_id)
             else:
                 logger.info(f"new file :{filename}")
                 # upload new file
@@ -164,50 +157,24 @@ if __name__ == "__main__":
                 files = {'file': open(file_path, 'rb')}
                 response = requests.post(url, data=data, files=files)
                 if response.status_code == 201:
-                    logger.info(f"File added to the new version successfully. {filename}")
+                    logger.info(f"File added to the new draft. {filename}")
                     to_be_updated += [filename]
                 else:
-                    logger.info(f"Failed to add {filename} to the new version. Status code: {response.status_code}")
+                    logger.info(f"Failed to add {filename} to the new draft. Status code: {response.status_code}")
                     logger.info(response.json())
-                    ####################
-                    #     rm Draft     #
-                    ####################
-                    r = requests.delete(f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}',
-                            params={'access_token': ACCESS_TOKEN})
-                    if r.status_code == 204:
-                        logger.info(f"Draft discarded")
-                    else:
-                        logger.info(f"Failed to discard draft, see below for details : error code {r.status_code}")
-                    #####################
+                    rm_draft(ACCESS_TOKEN, new_deposition_id)
 
         if len(to_be_updated)<1:
-            ####################
-            #     rm Draft     #
-            ####################
-            r = requests.delete(f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}',
-                    params={'access_token': ACCESS_TOKEN})
-            if r.status_code == 204:
-                logger.info(f"No file needs to be updated, draft discarded")
-            else:
-                logger.info(f"Failed to discard draft, error code : {r.status_code}")
-            #####################
+            logger.info("No updates detected")
+            rm_draft(ACCESS_TOKEN, new_deposition_id)
         else:
             # publish draft
             url_publish = f"https://zenodo.org/api/deposit/depositions/{new_deposition_id}/actions/publish"
             response = requests.post(url_publish, params={'access_token': ACCESS_TOKEN})
 
             if response.status_code == 202:
-                logger.info(f"New version published successfully. ID: {new_deposition_id}")
+                logger.info(f"New version published. ID: {new_deposition_id}")
             else:
                 logger.info(f"Failed to publish the new version. Status code: {response.status_code}")
                 logger.info(response.json())
-                ####################
-                #     rm Draft     #
-                ####################
-                r = requests.delete(f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}',
-                        params={'access_token': ACCESS_TOKEN})
-                if r.status_code == 204:
-                    logger.info(f"Draft discarded")
-                else:
-                    logger.info(f"Failed to discard draft, error code: {r.status_code}")
-                #####################
+                rm_draft(ACCESS_TOKEN, new_deposition_id)
