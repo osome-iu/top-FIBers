@@ -21,7 +21,7 @@
 # For more information see the manual pages of crontab(5) and cron(8)
 # 
 # m h  dom mon dow   command
-MAILTO=liu472@iu.edu,mdeverna@iu.edu
+MAILTO=liu472@iu.edu,mdeverna@iu.edu,pkamburu@iu.edu
 SHELL=/bin/bash
 
 
