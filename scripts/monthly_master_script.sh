@@ -177,16 +177,16 @@ rm success.log
 #    To update links for ALL FIBers found since the inception of this project,
 #    include either "-a" or "--all-users" when executing the script below.
 # -------------------------------------
-echo "$(date -Is) : Updating new top FIBer Twitter profile image links..." >> $MASTER_LOG
-$PYTHON_ENV scripts/data_processing/get_latest_profile_image_links.py
-if [ -e success.log ]; then
-   echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
-else
-   echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
-   exit 1
-fi
+# echo "$(date -Is) : Updating new top FIBer Twitter profile image links..." >> $MASTER_LOG
+# $PYTHON_ENV scripts/data_processing/get_latest_profile_image_links.py
+# if [ -e success.log ]; then
+#    echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
+# else
+#    echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
+#    exit 1
+# fi
 # Remove after checking for successful completion
-rm success.log
+# rm success.log
 
 ### Send the data to the database on Lisa
 # -------------------------------------
