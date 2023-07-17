@@ -122,39 +122,12 @@ if __name__ == "__main__":
         to_be_updated = []
         # iterate through local files and either update or upload
         for filename in file_names:
-            file_path = f"{folder_path}/{filename}"
-            if filename in remote_files:
-                checksum, file_id = remote_files[filename]
-                if calculate_md5(file_path)!=checksum:
-                    logger.info(filename, calculate_md5(file_path),remote_files[filename])
-                    
-                    # replace/update existing file
-                    response = requests.delete(f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}/files/{file_id}',
-                                                params={'access_token': ACCESS_TOKEN})
-                    if response.status_code == 204:
-                        logger.info(f"Old File deleted. {filename}")
-                    else:
-                        logger.info(f"Failed to Remove old {filename}. Status code: {response.status_code}")
-                        logger.info(json_response)
-                        rm_draft(ACCESS_TOKEN, new_deposition_id)
-
-                    url = f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}/files?access_token={ACCESS_TOKEN}'
-                    data = {'name': filename}
-                    files = {'file': open(file_path, 'rb')}
-                    response = requests.post(url, data=data, files=files)
-                    if response.status_code == 201:
-                        logger.info(f"File added to the new draft. {filename}")
-                        to_be_updated += [filename]
-                    else:
-                        logger.info(f"Failed to add {filename} to the new draft. Status code: {response.status_code}")
-                        logger.info(response.json())
-                        rm_draft(ACCESS_TOKEN, new_deposition_id)
-            else:
+            if filename not in remote_files:
                 logger.info(f"new file :{filename}")
                 # upload new file
                 url = f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}/files?access_token={ACCESS_TOKEN}'
                 data = {'name': filename}
-                files = {'file': open(file_path, 'rb')}
+                files = {'file': open(f"{folder_path}/{filename}", 'rb')}
                 response = requests.post(url, data=data, files=files)
                 if response.status_code == 201:
                     logger.info(f"File added to the new draft. {filename}")
@@ -173,6 +146,8 @@ if __name__ == "__main__":
             response = requests.post(url_publish, params={'access_token': ACCESS_TOKEN})
 
             if response.status_code == 202:
+                with open(os.path.join(REPO_ROOT, SUCCESS_FNAME), "w+") as outfile:
+                    pass
                 logger.info(f"New version published. ID: {new_deposition_id}")
             else:
                 logger.info(f"Failed to publish the new version. Status code: {response.status_code}")
