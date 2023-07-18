@@ -244,4 +244,24 @@ fi
 # Remove after checking for successful completion
 rm success.log
 
+### backing up the Zenodo backup
+# Log file saved here: ./logs/upload_zenodo_files.log
+# -------------------------------------
+
+echo "$(date -Is) : Uploading files for Zenodo..." >> $MASTER_LOG
+$PYTHON_ENV scripts/update_zenodo.py
+if [ -e success.log ]; then
+   echo "$(date -Is) : SUCCESS." >> $MASTER_LOG
+else
+   echo "$(date -Is) : FAILED. Exiting <${SCRIPT_NAME}>." >> $MASTER_LOG
+   exit 1
+fi
+# Remove after checking for successful completion
+rm success.log
+
+echo "$(date -Is) : Updating..." >> $MASTER_LOG
+git add data/iffy_files >> $MASTER_LOG
+git commit -m "adding new iffy files" >> $MASTER_LOG
+git push >> $MASTER_LOG
+
 echo "$(date -Is) : Script complete." >> $MASTER_LOG
