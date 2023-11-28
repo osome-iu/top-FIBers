@@ -23,11 +23,15 @@
 #
 # Author: Nick Liu
 
+from cgi import print_arguments
+import pprint
 import requests
 import json
 import os
 import hashlib
 import sys
+import time
+from datetime import datetime
 
 from top_fibers_pkg.utils import get_logger
 
@@ -61,10 +65,10 @@ def calculate_md5(file_path):
 def rm_draft(ACCESS_TOKEN, new_deposition_id):
     r = requests.delete(f'https://zenodo.org/api/deposit/depositions/{new_deposition_id}',
         params={'access_token': ACCESS_TOKEN})
-    if r.status_code == 204:
+    if r.status_code == 201:
         logger.info(f"Draft discarded")
     else:
-        logger.info(f"Failed to discard draft, error code: {r.status_code}")
+        logger.info(f"Failed to discard draft, error code: {r.status_code}, {new_deposition_id}")
 
 
 if __name__ == "__main__":
@@ -92,14 +96,16 @@ if __name__ == "__main__":
         except:
             logger.info("no trace available")
         finally:
-            exit()
+            exit(1)
     all_depo = r.json()
-
     # find the corresponding depo
     deposition_id = -1
+    deposition_info = None
     for depo in all_depo:
         if depo["conceptrecid"] == conceptrecid:
-            deposition_id = depo['links']['latest'].split('/')[-1]
+            logger.info(f"Depo info: {depo}")
+            deposition_id = depo['links']['latest_draft'].split('/')[-1] if 'latest_draft' in depo['links'] else depo['links']['latest'].split('/')[-3]
+            deposition_info = depo
             break
     if deposition_id == -1: logger.info(f"Failed to match the given conceptrecid: {conceptrecid}"); exit()
 
@@ -109,8 +115,9 @@ if __name__ == "__main__":
     json_response = response.json()
 
     if response.status_code != 201:
-        logger.info(f"Failed to create draft. Status code: {response.status_code}")
+        logger.info(f"Failed to create draft. Status code: {response.status_code}, deposition_id: {deposition_id}")
         logger.info(json_response)
+        logger.info(deposition_info)
     else:
         new_deposition_id = json_response['links']['latest_draft'].split("/")[-1]
         logger.info("Draft created.")
@@ -136,11 +143,46 @@ if __name__ == "__main__":
                     logger.info(f"Failed to add {filename} to the new draft. Status code: {response.status_code}")
                     logger.info(response.json())
                     rm_draft(ACCESS_TOKEN, new_deposition_id)
+                    exit(1)
 
+        time.sleep(30)
         if len(to_be_updated)<1:
             logger.info("No updates detected")
             rm_draft(ACCESS_TOKEN, new_deposition_id)
+            exit(1)
         else:
+            # add pub date
+            data = {
+                'metadata': {
+                    'publication_date': datetime.now().strftime("%Y-%m-%d"),
+                    'title': 'Top FIB Misinformation Superspreaders',
+                    'upload_type': 'dataset',
+                    'creators': [{'name': 'DeVerna, Matthew R','affiliation': 'Indiana University', 'orcid':'0000-0003-3578-8339'},
+                                {'name': 'Kamburugamuwa, Pasan','affiliation': 'Indiana University'},
+                                {'name': 'Liu, Nick','affiliation': 'Indiana University'},
+                                {'name': 'Yang, Kai-Cheng','affiliation': 'Indiana University', 'orcid':'0000-0003-4627-9273'},
+                                {'name': 'Serrette, Ben','affiliation': 'Indiana University'},
+                                {'name': 'Menczer, Filippo','affiliation': 'Indiana University', 'orcid':'0000-0003-4384-2876'}
+                                ],
+                    'description': "The Top FIBers dashboard (https://osome.iu.edu/tools/topfibers/) "
+                    "tracks and reports on the top superspreaders of low-credibility information on Twitter "
+                    "and Facebook each month. This repository serves as a record of the top 50 we find each "
+                    "time we update the dashboard.\n\nSuperspreaders are identified using the FIB index. Please "
+                    "see the paper (https://arxiv.org/abs/2207.09524) for more details.\n\nYou can learn more "
+                    "about the project here: https://osome.iu.edu/tools/topfibers/about"
+                    # Add other metadata fields if needed
+                }
+            }
+            response = requests.put(f"https://zenodo.org/api/deposit/depositions/{new_deposition_id}",
+                  params={'access_token': ACCESS_TOKEN}, data=json.dumps(data))
+            if response.status_code == 200:
+                logger.info(f"Publication Date added to Draft, status code: {response.status_code}")
+            else:
+                logger.info(f"Failed to add publication date. Status code: {response.status_code}")
+                logger.info(response.json())
+                rm_draft(ACCESS_TOKEN, new_deposition_id)
+                exit(1)
+            
             # publish draft
             url_publish = f"https://zenodo.org/api/deposit/depositions/{new_deposition_id}/actions/publish"
             response = requests.post(url_publish, params={'access_token': ACCESS_TOKEN})
