@@ -83,6 +83,7 @@ if __name__ == "__main__":
     logger = get_logger(LOG_DIR, LOG_FNAME, script_name=script_name, also_print=True)
     logger.info("-" * 50)
     logger.info(f"Begin script: {__file__}")
+    logger.info(f"")
 
     # Get list of depositions
     r = requests.get('https://zenodo.org/api/deposit/depositions',
@@ -190,7 +191,7 @@ if __name__ == "__main__":
             if response.status_code == 202:
                 with open(os.path.join(REPO_ROOT, SUCCESS_FNAME), "w+") as outfile:
                     pass
-                logger.info(f"New version published. ID: {new_deposition_id}")
+                logger.info(f"New version published. DOI permalink: https://doi.org/10.5281/zenodo.{new_deposition_id}")
             else:
                 logger.info(f"Failed to publish the new version. Status code: {response.status_code}")
                 logger.info(response.json())
