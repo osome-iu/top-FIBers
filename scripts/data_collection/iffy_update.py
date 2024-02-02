@@ -22,7 +22,7 @@ from urllib import request
 
 from top_fibers_pkg.utils import get_logger
 
-MBFC_FACTUAL_CATS = ["low", "very-low"]
+MBFC_FACTUAL_CATS = ["L", "VL"]
 REPO_ROOT = "/home/data/apps/topfibers/repo"
 LOG_DIR = "./logs"
 LOG_FNAME = "iffy_update.log"
